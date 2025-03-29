@@ -11,11 +11,14 @@ export const useAuthStore = defineStore({
             token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')!) : null, 
             loginSuccessReturnUrl: '/',
             registrationSuccessReturnUrl: '/auth/login',
-            fieldsErrors: {messages: []},
-            loginErrors: {messages: []},
+            errors: {},
+            message: '',
             loginStatus: 0,
             registrationStatus: 0
         }
+    },
+    getters: {
+        isLoggedIn: (state) => !!state.token
     },
     actions: {
         async registration(name: string, email: string, password: string) {
@@ -26,16 +29,22 @@ export const useAuthStore = defineStore({
                 },
                 body: JSON.stringify({name, email, password})
             });
-            
+
             if (response.status == 201) {
                 this.registrationStatus = 201;
                 router.push(this.registrationSuccessReturnUrl || '/')
             }
-            else {
+            else if (response.status == 400) {
                 this.registrationStatus = 400;
                 const data = await response.json();
-                this.fieldsErrors = data;
+                this.errors = data.errors;
             }
+            else {
+                this.registrationStatus = 409;
+                const data = await response.json();
+                this.message = data.message;
+            }
+            
         },
         async login(email: string, password: string) {
             const response = await fetch('http://localhost:8080/auth/login', {
@@ -49,38 +58,31 @@ export const useAuthStore = defineStore({
             if (response.status == 200) {
                 this.loginStatus = 200;
                 const data = await response.json();
+
                 const token = data.token;
-                //const name = data.name;
-                
-                //this.name = name;
-                this.email = email;
                 this.token = token;
-                
-                //localStorage.setItem('name', JSON.stringify(name));
-                localStorage.setItem('email', JSON.stringify(email));
                 localStorage.setItem('token', JSON.stringify(token));
 
                 useAuthElementsStore().loginAction();
-
                 router.push(this.loginSuccessReturnUrl || '/');
-            } else {
+            } 
+            else if (response.status == 400) {
                 this.loginStatus = 400;
                 const data = await response.json();
-                this.loginErrors = data;
+                this.errors = data.errors;
+            } 
+            else if (response.status == 401) {
+                this.loginStatus = 401;
+                const data = await response.json();
+                this.message = data.message;
             }
         },
         logout() {
             this.loginStatus = 0;
             this.registrationStatus = 0;
-
-            //this.name = null;
-            this.email = null;
             this.token = null;
 
-            //localStorage.removeItem('name');
-            localStorage.removeItem('email');
             localStorage.removeItem('token');
-
             useAuthElementsStore().logoutAction();
 
             router.push('/');

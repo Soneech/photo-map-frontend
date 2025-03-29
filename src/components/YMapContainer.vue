@@ -9,7 +9,7 @@
 </script>
 
 <template>
-    <div class="map-container" style="width: 90%; height: 78vh; margin: auto;">
+    <div class="map-container" style="width: 100%; height: 90vh; margin: auto;">
         <YMap :location="LOCATION">
 
         <YMapDefaultSchemeLayer />

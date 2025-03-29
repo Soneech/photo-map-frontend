@@ -8,34 +8,26 @@
         auth.logout();
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-            let logOutBtn = document.getElementById('logout-btn');
-            let signInBtn = document.getElementById('sign-in-btn');
-            let signUpBtn = document.getElementById('sign-up-btn');
-
-            if (localStorage.getItem('username')) {
-                logOutBtn.style.visibility = "visible";
-                signInBtn.style.visibility = "hidden";
-                signUpBtn.style.visibility = "hidden";
-            }
-            else {
-                logOutBtn.style.visibility = "hidden";
-                signInBtn.style.visibility = "visible";
-                signUpBtn.style.visibility = "visible";
-            }
-    });
-
 </script>
 
 <template>
     <header>
         <div class="header-container">
-            <h1 class="logo-text"><RouterLink to="/home">Фото Карточка</RouterLink></h1>
+            <h1 class="logo-text"><RouterLink to="/">Фото Карточка</RouterLink></h1>
             <div class="navigation">
                 <ul>
-                    <li><RouterLink to="/auth/login" class="header-button" id="sign-in-btn">Войти</RouterLink></li>
-                    <li><RouterLink to="/auth/registration" class="header-button" id="sign-up-btn">Зарегистрироваться</RouterLink></li>
-                    <li><a href="#" @click="logout" class="header-button" id="logout-btn">Выйти</a></li>
+                    <li v-if="auth.isLoggedIn">
+                        <a href="#" @click="logout" class="header-button" id="logout-btn">Выйти</a>
+                    </li>
+                    <div v-else>
+                        <li>
+                            <RouterLink to="/auth/login" class="header-button" id="sign-in-btn">Войти</RouterLink>
+                        </li>
+                        <li>
+                            <RouterLink to="/auth/registration" class="header-button" id="sign-up-btn">Зарегистрироваться</RouterLink>
+                        </li>
+                    </div>
+                    
                 </ul>
             </div>
         </div>

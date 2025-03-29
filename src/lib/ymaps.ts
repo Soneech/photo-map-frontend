@@ -1,6 +1,5 @@
 import * as Vue from 'vue';
 
-
 function waitForYmaps3(): Promise<any> {
   return new Promise((resolve) => {
     const check = () => {
@@ -15,6 +14,7 @@ function waitForYmaps3(): Promise<any> {
 }
 
 const ymaps3 = await waitForYmaps3();
+
 const [ymaps3Vue] = await Promise.all([
   ymaps3.import('@yandex/ymaps3-vuefy'),
   ymaps3.ready
@@ -27,4 +27,3 @@ export const {
   YMapDefaultFeaturesLayer,
   YMapMarker
 } = vuefy.module(ymaps3);
-

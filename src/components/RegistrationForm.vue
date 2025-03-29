@@ -9,10 +9,11 @@
     }
 
     const isModalVisible = ref(false);
+    const auth = useAuthStore();
 
     async function onSubmit() {
-        await useAuthStore().registration(user.name, user.email, user.password);
-        if (useAuthStore().registrationStatus == 400) {
+        await auth.registration(user.name, user.email, user.password);
+        if (auth.registrationStatus == 400 || auth.registrationStatus == 409) {
             openModalWindow();
         }
     }
@@ -24,11 +25,11 @@
     function closeModalWindow() {
         isModalVisible.value = false;
     }
-
 </script>
 
 <template>
-    <form @submit.prevent="onSubmit" class="auth-form">
+    <div class="auth-block">
+        <form @submit.prevent="onSubmit" class="auth-form">
         <h2 class="form-title">Введите данные аккаунта</h2>
 
         <input type="text" id="name" class="form-input" placeholder="Логин" v-model="user.name">
@@ -36,12 +37,15 @@
         <input type="password" id="password" class="form-input" placeholder="Пароль" v-model="user.password">
 
         <button type="submit" class="default-button form-button sign-up-form-btn">Зарегистрироваться</button>
-    </form>
+        </form>
 
-    <div :class="{ 'modal': true, 'visible': isModalVisible }">
-        <button @click="closeModalWindow">✖</button>
-        <p v-if="useAuthStore().registrationStatus == 400" v-for="message in useAuthStore().fieldsErrors.messages">{{ message }}</p>
+        <div :class="{ 'modal': true, 'visible': isModalVisible }">
+            <button @click="closeModalWindow">✖</button>
+            <p v-if="auth.registrationStatus == 400" v-for="message in auth.errors">{{ message }}</p>
+            <p v-if="auth.registrationStatus == 409">{{ auth.message }}</p>
+        </div>
+
+        <div class="overlay" :class="{ 'visible': isModalVisible }"></div>
     </div>
-
-    <div class="overlay" :class="{ 'visible': isModalVisible }"></div>
+    
 </template>

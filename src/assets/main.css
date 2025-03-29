@@ -25,7 +25,7 @@ a {
 
 .wrapper {
     position: relative;
-    min-height: 100vh;
+    min-height: 93.2vh;
 }
 
 .header-container {
@@ -33,7 +33,7 @@ a {
     margin: auto;
     display: flex;
     align-items: center;
-    height: 60px;
+    height: 30px;
     justify-content: space-between;
 }
 
@@ -58,8 +58,7 @@ footer {
     left: 0;
     width: 100%;
     background-color: #1a1a1a;
-    height: 110px;
-    margin-bottom: -160px;
+    height: 60px;
 }
 
 .footer-link {
@@ -84,10 +83,6 @@ ul {
     margin-right: 20px;
 }
 
-.main-content {
-    padding-top: 50px;
-}
-
 .main-content h2 {
     color: #333;
 }
@@ -95,11 +90,6 @@ ul {
 .main-content p {
     color: #555;
     font-size: 18px;
-}
-
-.greeting-container {
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 .home-poll-container, .home-poll-form {
