@@ -1,37 +1,11 @@
 <script lang="ts" setup>
+    import {YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker} from '../lib/ymaps';
     import type {YMapLocationRequest} from 'ymaps3';
 
-    async function waitForYmaps3(): Promise<any> {
-        return new Promise((resolve) => {
-            const check = () => {
-                if ((window as any).ymaps3) {
-                    resolve((window as any).ymaps3);
-                } else {
-                    setTimeout(check, 50);
-                }
-            };
-            check();
-        });
-    }
-
-    async function initMap(): Promise<void> {
-        const ymaps3 = await waitForYmaps3();
-
-        await ymaps3.ready;
-
-        const LOCATION: YMapLocationRequest = {
-            center: [37.588144, 55.733842],
-            zoom: 9
-        };
-
-        const { YMap, YMapDefaultSchemeLayer } = ymaps3;
-
-        const map = new YMap(document.getElementById('map'), { location: LOCATION });
-        map.addChild(new YMapDefaultSchemeLayer({}));
-    }
-
-    initMap();
-    ymaps3.strictMode = true;
+    const LOCATION: YMapLocationRequest = {
+        center: [37.588144, 55.733842],
+        zoom: 9
+    };
 </script>
 
 <template>
@@ -49,9 +23,16 @@
         </div>
 
         <div class="map-container" style="width: 600px; height: 400px">
-            <div id="map" class="map">
+            <YMap :location="LOCATION">
+            <YMapDefaultSchemeLayer />
+            <YMapDefaultFeaturesLayer />
 
-            </div>
+            <YMapMarker :coordinates="[37.588144, 55.733842]" :draggable="true">
+                <section>
+                <h1>You can drag this header</h1>
+                </section>
+            </YMapMarker>
+            </YMap>
         </div>
     </div>
 </template>
