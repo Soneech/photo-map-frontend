@@ -15,6 +15,7 @@ button {
 
 h1, h2, .logo-text, .error-message {
     font-weight: normal;
+    font-size: 26px;
     text-align: center;
 }
 
@@ -25,11 +26,10 @@ a {
 
 .wrapper {
     position: relative;
-    min-height: 93.2vh;
+    min-height: 100vh;
 }
 
 .header-container {
-    width: 95%;
     margin: auto;
     display: flex;
     align-items: center;
@@ -38,12 +38,15 @@ a {
 }
 
 header {
+    width: 100%;
+    position: absolute;
+    z-index: 100;
     background-color: #1a1a1a;
-    padding: 35px 0;
+    padding: 20px 0;
 }
 
 .footer-container {
-    width: 45%;
+    width: 35%;
     font-size: 20px;
     margin: auto;
     display: flex;
@@ -58,7 +61,7 @@ footer {
     left: 0;
     width: 100%;
     background-color: #1a1a1a;
-    height: 60px;
+    height: 40px;
 }
 
 .footer-link {
@@ -109,12 +112,13 @@ ul {
 .default-button {
     display: inline-block;
     background-color: #ffffff;
-    padding: 15px 30px;
+    padding: 10px 10px;
     color: #030303;
     border: 2px solid #030303;
     border-radius: 2px;
     transition: background-color 0.5s ease;
     font-size: 16px;
+    width: 20%;
 }
 
 .default-button:hover {
@@ -123,9 +127,10 @@ ul {
 }
 
 .header-button {
+    font-size: 17.5px;
     color: #ffffff;
-    border: 2px solid #ffffff;
-    padding: 12px 22px;
+    border: none;
+    padding: 10px 17px;
     border-radius: 2px;
     transition: background-color 0.5s ease;
 }

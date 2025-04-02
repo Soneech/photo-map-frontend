@@ -11,29 +11,29 @@
 </script>
 
 <template>
-    <header>
-        <div class="header-container">
-            <h1 class="logo-text"><RouterLink to="/">Фото Карточка</RouterLink></h1>
-            <div class="navigation">
-                <ul>
-                    <li v-if="auth.isLoggedIn">
-                        <a href="#" @click="logout" class="header-button" id="logout-btn">Выйти</a>
-                    </li>
-                    <div v-else>
-                        <li>
-                            <RouterLink to="/auth/login" class="header-button" id="sign-in-btn">Войти</RouterLink>
-                        </li>
-                        <li>
-                            <RouterLink to="/auth/registration" class="header-button" id="sign-up-btn">Зарегистрироваться</RouterLink>
-                        </li>
-                    </div>
-                    
-                </ul>
-            </div>
-        </div>
-    </header>
-
     <div class="wrapper">
+        <header>
+            <div class="header-container">
+                <h1 class="logo-text"><RouterLink to="/">Фото Карточка</RouterLink></h1>
+                <div class="navigation">
+                    <ul>
+                        <li v-if="auth.isLoggedIn">
+                            <a href="#" @click="logout" class="header-button" id="logout-btn">Выйти</a>
+                        </li>
+                        <div v-else>
+                            <li>
+                                <RouterLink to="/auth/login" class="header-button" id="sign-in-btn">Войти</RouterLink>
+                            </li>
+                            <li>
+                                <RouterLink to="/auth/registration" class="header-button" id="sign-up-btn">Зарегистрироваться</RouterLink>
+                            </li>
+                        </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </header>
+
         <RouterView/>
 
         <footer>

@@ -1,20 +1,33 @@
-<script lang="ts" setup>
-    import {YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker} from '../lib/ymaps';
-    import type {YMapLocationRequest} from 'ymaps3';
+<script setup lang="ts">
+import { RouterLink, RouterView } from 'vue-router';
+import YMapComponent from './YMapComponent.vue';
 
-    const LOCATION: YMapLocationRequest = {
-        center: [37.588144, 55.733842],
-        zoom: 9
-    };
+import {   
+    isFromVisible,
+    closeFormWindow 
+} from '../lib/useMapEventTracker';
 </script>
 
 <template>
-    <div class="map-container" style="width: 100%; height: 90vh; margin: auto;">
-        <YMap :location="LOCATION">
+    <div>
+        <div>
+            <div :class="{ 'modal': true, 'visible': isFromVisible }" class="mark-modal">
+                <button @click="closeFormWindow" class="close-form-btn">✖</button>
 
-        <YMapDefaultSchemeLayer />
-        <YMapDefaultFeaturesLayer />
+                <div>
+                    <p>Хотите создать метку?</p>
+                    <div class="mark-form-btns">
+                        <RouterLink to="/marks/create"><button @click="closeFormWindow">Да</button></RouterLink>
+                        <button @click="closeFormWindow">Нет</button>
+                    </div>
+                </div> 
+            </div>
+            <div class="overlay" :class="{ 'visible': isFromVisible }"></div>
+        </div>
 
-        </YMap>
+        <div class="map-container" style="width: 100%; height: 100vh; margin: auto;">
+            <YMapComponent></YMapComponent>
+        </div>
     </div>
+
 </template>

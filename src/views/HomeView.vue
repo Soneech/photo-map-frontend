@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-    import { RouterLink } from 'vue-router';
     import YMapContainer from '../components/YMapContainer.vue'
 </script>
 

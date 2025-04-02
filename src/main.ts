@@ -8,7 +8,7 @@ import router from './router'
 import './assets/main.css'
 import './assets/forms.css'
 import './assets/carts.css'
-import './assets/polls.css'
+import './assets/marks.css'
 
 const app = createApp(App)
 

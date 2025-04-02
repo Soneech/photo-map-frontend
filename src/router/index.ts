@@ -2,6 +2,7 @@ import { useAuthStore } from '@/stores/auth';
 import HomeVue from '@/views/HomeView.vue';
 import LoginVue from '@/views/LoginView.vue';
 import RegistrationVue from '@/views/RegistrationView.vue';
+import CreateMarkVue from '@/views/CreateMarkView.vue';
 
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -23,6 +24,11 @@ const router = createRouter({
       name: 'Registration',
       component: RegistrationVue
     },
+    {
+      path: '/marks/create',
+      name: 'CreateMark',
+      component: CreateMarkVue
+    }
   ]
 });
 
@@ -31,7 +37,7 @@ router.beforeEach(async (to) => {
   const authRequired = !publicPages.includes(to.path);
   const auth = useAuthStore();
 
-  if (authRequired && !auth.email) {
+  if (authRequired && !auth.token) {
     return '/'
   }
 });

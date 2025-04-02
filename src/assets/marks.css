@@ -1,0 +1,39 @@
+.create-mark-form-block {
+    width: 60vw;
+    margin: auto;
+}
+
+.mark-note {
+    width: 100%;
+    margin: auto;
+    height: 10vh;
+}
+
+.create-polls-btn {
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.create-poll-main-btns {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.create-poll-main-btns button {
+    margin: 10px;
+}
+
+.poll-theme-create, .question-text-create {
+    text-decoration: none;
+    border-left: 1px solid black;
+}
+
+.delete-btn {
+    padding: 7px;
+    width: 40px;
+    margin: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
