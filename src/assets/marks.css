@@ -1,18 +1,19 @@
 .create-mark-form-block {
-    width: 60vw;
+    width: 70vw;
     margin: auto;
+    margin-top: 50px;
 }
 
 .mark-note {
     width: 100%;
     margin: auto;
     height: 10vh;
-}
+    font-size: 17px;
 
-.create-polls-btn {
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    border: none;
+    outline: none;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #030303;
 }
 
 .create-poll-main-btns {
@@ -21,19 +22,104 @@
     align-items: center;
 }
 
-.create-poll-main-btns button {
-    margin: 10px;
+.load-files-block {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: 30px;
 }
 
-.poll-theme-create, .question-text-create {
-    text-decoration: none;
-    border-left: 1px solid black;
+.load-photo-block,
+.load-video-block {
+    flex: 1;
 }
 
-.delete-btn {
-    padding: 7px;
-    width: 40px;
-    margin: 10px;
+.load-photo-block label,
+.load-video-block label {
+    font-size: 17px;
+    color: #000;
+    display: block;
+    margin-bottom: 13px;
+}
+
+.load-photo-block input,
+.load-video-block input {
+    background-color: #fff;
+    color: #000;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.4s ease;
+}
+
+.load-photo-block input:hover,
+.load-video-block input:hover {
+    background-color: #f0f0f0;
+}
+
+#photo-upload, #video-upload {
+    display: none;
+}
+
+.file-upload-button {
+    text-decoration: underline;
+    background-color: #fff;
+    color: #000;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.file-upload-button:hover {
+    background-color: #f0f0f0;
+}
+
+.previews {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.preview-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 2px;
+    padding: 10px;
+    background-color: #fff;
+    width: 250px;
+    height: 165px;
+    box-shadow: 2px 2px 0 #0c0c0c;
+    transition: box-shadow 0.3s;
+}
+
+.preview-item:hover {
+    box-shadow: 4px 4px 0 #000;
+}
+
+.preview-item img,
+.preview-item video {
+    margin-top: 8px;
+    max-width: 90%;
+    max-height: 85%;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+.preview-item p {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #000;
+    word-break: break-word;
     text-align: center;
-    vertical-align: middle;
+}
+
+.create-mark-button {
+    margin-top: 20px;
+    width: 170px;
 }
