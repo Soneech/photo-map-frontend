@@ -25,7 +25,7 @@ import {
             <div class="overlay" :class="{ 'visible': isFromVisible }"></div>
         </div>
 
-        <div class="map-container" style="width: 100%; height: 100vh; margin: auto;">
+        <div class="map-container">
             <YMapComponent></YMapComponent>
         </div>
     </div>

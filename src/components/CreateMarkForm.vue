@@ -13,15 +13,23 @@
     }
 
     interface Mark {
-        note: string
-        photoFiles: File[]
-        videoFiles: File[]
+        name: string,
+        description: string
+    }
+
+    interface Files {
+        photos: File[],
+        videos: File[]
     }
 
     const mark = ref<Mark>({
-        note: '',
-        photoFiles: [],
-        videoFiles: []
+        name: '',
+        description: ''
+    })
+
+    const markFiles = ref<Files>({
+        photos: [],
+        videos: []
     })
 
     function handlePhotoUpload(event: Event) {
@@ -29,14 +37,14 @@
         if (!files) return
 
         const fileArray = Array.from(files)
-        const total = mark.value.photoFiles.length + fileArray.length
+        const total = markFiles.value.photos.length + fileArray.length
 
         if (total > 10) {
             alert('Можно загрузить не более 10 фотографий')
             return
         }
 
-        mark.value.photoFiles.push(...fileArray)
+        markFiles.value.photos.push(...fileArray)
     }
 
     function handleVideoUpload(event: Event) {
@@ -44,14 +52,14 @@
         if (!files) return
 
         const fileArray = Array.from(files)
-        const total = mark.value.videoFiles.length + fileArray.length
+        const total = markFiles.value.videos.length + fileArray.length
 
         if (total > 3) {
             alert('Можно загрузить не более 3 видеофайлов')
             return
         }
 
-        mark.value.videoFiles.push(...fileArray)
+        markFiles.value.videos.push(...fileArray)
     }
 
     function getObjectURL(file: File): string {
@@ -63,7 +71,8 @@
 <template>
     <div class="create-mark-form-block">
         <form class="create-mark-form">
-            <textarea class="mark-note" placeholder="Ваша заметка" v-model="mark.note"></textarea>
+            <input type="text" id="name" class="form-input" placeholder="Название" v-model="mark.name">
+            <textarea class="mark-note" placeholder="Ваша заметка" v-model="mark.description"></textarea>
             
             <div class="load-files-block">
                 <div class="load-photo-block">
@@ -76,9 +85,8 @@
                     </div>
 
                     <div class="previews">
-                        <div class="preview-item" v-for="(file, index) in mark.photoFiles" :key="index">
+                        <div class="preview-item" v-for="(file, index) in markFiles.photos" :key="index">
                             <img :src="getObjectURL(file)" alt="preview"/>
-                            <p>{{ file.name }}</p>
                         </div>
                     </div>
                 </div>
@@ -93,9 +101,8 @@
                     </div>
 
                     <div class="previews">
-                        <div class="preview-item" v-for="(file, index) in mark.videoFiles" :key="index">
+                        <div class="preview-item" v-for="(file, index) in markFiles.videos" :key="index">
                             <video :src="getObjectURL(file)" controls></video>
-                            <p>{{ file.name }}</p>
                         </div>
                     </div>
                 </div>
@@ -104,5 +111,8 @@
 
             <button type="submit" class="default-button create-mark-button">Сохранить</button>
         </form>
+    </div>
+
+    <div style="height: 3vh">
     </div>
 </template>

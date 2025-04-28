@@ -2,6 +2,11 @@
     width: 70vw;
     margin: auto;
     margin-top: 50px;
+    margin-bottom: 50px;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #0f0a051a;
 }
 
 .mark-note {
@@ -9,7 +14,6 @@
     margin: auto;
     height: 10vh;
     font-size: 17px;
-
     border: none;
     outline: none;
     background-color: #f7f7f7;
@@ -79,36 +83,24 @@
 
 .previews {
     margin-top: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    column-width: 230px;
+    gap: 15px;
 }
 
-.preview-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid #000;
-    border-radius: 2px;
-    padding: 10px;
-    background-color: #fff;
-    width: 250px;
-    height: 165px;
-    box-shadow: 2px 2px 0 #0c0c0c;
-    transition: box-shadow 0.3s;
-}
-
-.preview-item:hover {
-    box-shadow: 4px 4px 0 #000;
+.preview-item img:hover,
+.preview-item video:hover {
+    cursor: pointer;
+    box-shadow: 0 0 17px #0f0a0564;
 }
 
 .preview-item img,
 .preview-item video {
     margin-top: 8px;
-    max-width: 90%;
-    max-height: 85%;
+    max-width: 250px;
     object-fit: cover;
-    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #0f0a0564;
+    transition: box-shadow 0.3s;
 }
 
 .preview-item p {

@@ -34,7 +34,10 @@
             </div>
         </header>
 
-        <RouterView/>
+        <div class="main">
+            <RouterView/>
+        </div>
+        
 
         <footer>
             <div class="footer-container">

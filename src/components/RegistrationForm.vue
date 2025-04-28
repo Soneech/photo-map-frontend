@@ -35,6 +35,10 @@
         <input type="text" id="name" class="form-input" placeholder="Логин" v-model="user.name">
         <input type="text" id="email" class="form-input" placeholder="Почта" v-model="user.email">
         <input type="password" id="password" class="form-input" placeholder="Пароль" v-model="user.password">
+        
+        <p>Уже есть акканут?
+            <RouterLink to="/auth/login" style="text-decoration: underline; margin: auto;">Войти</RouterLink>
+        </p>
 
         <button type="submit" class="default-button form-button sign-up-form-btn">Зарегистрироваться</button>
         </form>

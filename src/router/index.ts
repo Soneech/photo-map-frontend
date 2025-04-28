@@ -38,7 +38,7 @@ router.beforeEach(async (to) => {
   const auth = useAuthStore();
 
   if (authRequired && !auth.token) {
-    return '/'
+    return '/auth/login'
   }
 });
 
