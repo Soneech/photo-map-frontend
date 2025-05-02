@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-    import YMapComponent from '@/components/YMapComponent.vue';
+    import YMapFormComponent from '@/components/YMapFormComponent.vue';
     import CreateMarkForm from '@/components/CreateMarkForm.vue';
 
     import { useAuthStore } from '../stores/auth';
-    import { ref } from 'vue';
 
     const auth = useAuthStore();
     const token = auth.token;
@@ -12,7 +11,7 @@
 <template>
     <div class="main-content">
         <div class="map-container" style="width: 100%; height: 43vh; margin: auto; box-shadow: 0 0 11px #0f0a051a;">
-            <YMapComponent></YMapComponent>
+            <YMapFormComponent></YMapFormComponent>
         </div>
         <div>
             <CreateMarkForm></CreateMarkForm>

@@ -1,18 +1,33 @@
 <script lang="ts" setup>
     import { ref } from 'vue';
+    import { 
+        markCoords
+    } from '../lib/useMapEventTracker';
+    import { useAuthStore } from '@/stores/auth';
+    import router from '@/router';
+
     declare const URL: typeof window.URL;
 
-    const isModalVisible = ref(false);
+    var errors: string[] = [];
+
+    var isModalVisible = ref(false);
+    var isErrorModalVisible = ref(false);
 
     const openModalWindow = () => {
         isModalVisible.value = true;
     };
-
+    const openErrorModalWindow = () => {
+        isErrorModalVisible.value = true;
+    };
     const closeModalWindow = () => {
         isModalVisible.value = false;
+        isErrorModalVisible.value = false;
+        errors = [];
     }
 
     interface Mark {
+        latitude: number,
+        longitude: number,
         name: string,
         description: string
     }
@@ -22,9 +37,13 @@
         videos: File[]
     }
 
+    const auth = useAuthStore();
+
     const mark = ref<Mark>({
         name: '',
-        description: ''
+        description: '',
+        latitude: markCoords.value[0],
+        longitude: markCoords.value[1],
     })
 
     const markFiles = ref<Files>({
@@ -66,11 +85,56 @@
         return URL.createObjectURL(file)
     }
 
+    async function createMark() {
+        const formData = new FormData();
+        mark.value.latitude = markCoords.value[0];
+        mark.value.longitude = markCoords.value[1];
+    
+        formData.append("mark", new Blob([JSON.stringify(mark.value)], { type: "application/json" }));
+    
+        markFiles.value.photos.forEach(photo => formData.append("photos", photo));
+        markFiles.value.videos.forEach(video => formData.append("videos", video));
+    
+        const response = await fetch("http://localhost:8080/marks/create", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${auth.token}`,
+        },
+        body: formData
+        });
+        
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            console.log(errorResponse);
+
+            if (errorResponse.status == '401') {
+                router.push("/auth/login");
+            }
+            else {
+                errors = errorResponse.errors;
+                console.log(errors);
+                openErrorModalWindow();
+                return;
+            }
+        }
+    
+        const result = await response.json();
+        openModalWindow();
+
+        return result;
+    }
+
+    function onSubmit() {
+        console.log(mark);
+        console.log(markFiles);
+        createMark();
+    }
+
 </script>
 
 <template>
     <div class="create-mark-form-block">
-        <form class="create-mark-form">
+        <form @submit.prevent="onSubmit" class="create-mark-form">
             <input type="text" id="name" class="form-input" placeholder="Название" v-model="mark.name">
             <textarea class="mark-note" placeholder="Ваша заметка" v-model="mark.description"></textarea>
             
@@ -111,6 +175,22 @@
 
             <button type="submit" class="default-button create-mark-button">Сохранить</button>
         </form>
+
+        <div :class="{ 'modal': true, 'visible': isModalVisible }" class="mark-modal">
+            <div>
+                <p>Метка успешно создана</p>
+                <div class="mark-form-btns">
+                    <RouterLink to="/"><button @click="closeModalWindow">Ок</button></RouterLink>
+                </div>
+            </div> 
+        </div>
+        <div class="overlay" :class="{ 'visible': isModalVisible }"></div>
+
+        <div :class="{ 'modal': true, 'visible': isErrorModalVisible }">
+            <button @click="closeModalWindow" class="close-form-btn">✖</button>
+            <p v-if="errors.length != 0" v-for="message in errors">{{ message }}</p>
+        </div>
+        <div class="overlay" :class="{ 'visible': isErrorModalVisible }"></div>
     </div>
 
     <div style="height: 3vh">

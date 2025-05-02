@@ -1,6 +1,5 @@
 <script setup lang="ts">
     import { ref } from 'vue'
-    import { useAuthStore } from '@/stores/auth';
 
     import {
         YMap,
@@ -12,48 +11,23 @@
 
     import { 
         setMapRef,
-        useMapEventTracker
+        useMapEventTracker, 
+        markCoords,
     } from '../lib/useMapEventTracker';
 
     const LOCATION = {
-        center: [37.588144, 55.733842],
-        zoom: 10
+        center: markCoords.value,
+        zoom: 15
     }
-
-    const auth = useAuthStore();
 
     const mapRef = ref()
     setMapRef(mapRef)
 
     const {
         clickEventHandler,
-        dblClickEventHandler,
         createBehaviorHandler,
         createDomEventHandler,
     } = useMapEventTracker()
-
-    interface Mark {
-       id: BigInt,
-       latitude: number,
-       longitude: number,
-       name: string 
-    }
-
-    const markers = ref<Mark[]>([]);
-
-    async function getAllMarks() {
-        const response = await fetch("http://localhost:8080/marks/main", {
-            method: "GET"
-        });
-
-        if (response.status == 200) {
-            const data: Mark[] = await response.json();
-            markers.value = data;
-        }
-    }
-
-    getAllMarks();
-
 </script>
 
 <template>
@@ -62,8 +36,7 @@
         <YMapDefaultFeaturesLayer />
 
         <YMapListener
-        @click="(_: any, event: object) => clickEventHandler(event, true)"
-        @dblClick="(_: any, event: object) => dblClickEventHandler(event)"
+        @click="(_: any, event: object) => clickEventHandler(event, false)"
 
         @mouseMove="(_: any, event: object) => createDomEventHandler('mouseMove', event)"
         @mouseEnter="(_: any, event: object) => createDomEventHandler('mouseEnter', event)"
@@ -74,11 +47,11 @@
         @actionEnd="(obj: object) => createBehaviorHandler(obj, false)"
         />
         
-        <YMapMarker
-            v-for="(mark, index) in markers"
-            :key="index"
-            :coordinates="[mark.latitude, mark.longitude]">
-            <div style="width: 14px; height: 14px; background: green; border-radius: 50%"></div>
-        </YMapMarker>
+        <div>
+            <YMapMarker
+                :coordinates="markCoords">
+                <div style="width: 14px; height: 14px; background: green; border-radius: 50%"></div>
+            </YMapMarker>
+        </div>
     </YMap>
 </template>

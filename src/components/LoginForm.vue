@@ -46,7 +46,7 @@
         </form>
 
         <div :class="{ 'modal': true, 'visible': isModalVisible }">
-            <button @click="closeModalWindow">✖</button>
+            <button @click="closeModalWindow" class="close-form-btn">✖</button>
             <p v-if="useAuthStore().loginStatus == 400" v-for="message in useAuthStore().errors">{{ message }}</p>
             <p v-if="useAuthStore().loginStatus == 401">{{ auth.message }}</p>
         </div>

@@ -17,10 +17,13 @@ export function useMapEventTracker() {
         drag: false,
     });
 
-    const clickEventHandler = (event: object) => {
-        //createMark(event);
+    const clickEventHandler = (event: object, openForm: boolean) => {
         console.log(event);
-        openFormWindow();
+        saveMarkCoords(event);
+
+        if (openForm) {
+            openFormWindow();
+        }
         createDomEventHandler('click', event);
     }
 
@@ -67,15 +70,15 @@ export function setMapRef(ref: Ref<any>) {
   mapRef = ref
 }
 
-// create marks
-export const markers = ref<[number, number][]>([]);
+export const markCoords = ref<[number, number]>();
 
-function createMark(event: object) {
+function saveMarkCoords(event: object) {
     let coords = event?.coordinates;
     if (coords) {
-        markers.value.push(coords)
-        console.log('Добавлена метка в:', coords)
+        markCoords.value = coords;
+        console.log('Сохранены координаты: ', markCoords.value);
     }
+    
 }
 
 // zoom handler
