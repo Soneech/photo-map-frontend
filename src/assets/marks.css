@@ -115,3 +115,54 @@
     margin-top: 20px;
     width: 170px;
 }
+
+.marker-circle {
+    width: 19px;
+    height: 19px;
+    background-color: #2663c4c9;
+    border-radius: 50%;
+    border: 2px solid white;
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.7s ease;
+}
+
+.marker-circle:hover {
+    cursor: pointer;
+    transform: translate(-50%, -50%) scale(1.2);
+    transition: transform 0.7s ease;
+}
+  
+.cluster-circle {
+    width: 32px;
+    height: 32px;
+    background-color: #2663c4c9;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    font-size: 14px;
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.7s ease;
+}
+
+.cluster-circle:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    transform: translate(-50%, -50%) scale(1.2);
+    transition: transform 0.7s ease;
+}
+
+.preview-modal {
+    padding: 20px 45px;
+}
+
+.mark-preview-item {
+    border-bottom: 1px solid #00000089;
+}
+
+.mark-name-preview {
+    text-decoration: underline;
+}

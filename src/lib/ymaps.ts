@@ -16,10 +16,14 @@ function waitForYmaps3(): Promise<any> {
 }
 
 export const ymaps3 = await waitForYmaps3()
+const clusterer = await ymaps3.import('@yandex/ymaps3-clusterer@0.0.1');
+
 export const [ymaps3Vue] = await Promise.all([
   ymaps3.import('@yandex/ymaps3-vuefy'),
-  ymaps3.ready
+  ymaps3.ready,
+  clusterer
 ])
+
 
 const vuefy = ymaps3Vue.vuefy.bindTo(Vue)
 
@@ -34,8 +38,13 @@ export const {
   YMapDefaultSchemeLayer,
   YMapDefaultFeaturesLayer,
   YMapMarker,
+  YMapClusterer,
+  clusterByGrid,
   YMapListener,
   YMapControls,
   YMapControl,
-} = vuefy.module(ymaps3)
+} = vuefy.module({
+  ...ymaps3,
+  ...clusterer
+})
 

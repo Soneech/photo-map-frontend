@@ -1,17 +1,19 @@
 <script setup lang="ts">
-    import { ref } from 'vue'
+    import { ref, computed } from 'vue'
     import { useAuthStore } from '@/stores/auth';
+    import { RouterLink } from 'vue-router';
 
     import {
         YMap,
         YMapDefaultSchemeLayer,
         YMapDefaultFeaturesLayer,
         YMapListener,
-        YMapMarker
+        YMapMarker,
+        YMapClusterer,
+        clusterByGrid
     } from '../lib/ymaps'
 
     import { 
-        setMapRef,
         useMapEventTracker
     } from '../lib/useMapEventTracker';
 
@@ -22,8 +24,10 @@
 
     const auth = useAuthStore();
 
-    const mapRef = ref()
-    setMapRef(mapRef)
+    const mapEntity = ref<any>(null)
+    function refMap(el: { entity: any } | null) {
+        mapEntity.value = el?.entity ?? null
+    }
 
     const {
         clickEventHandler,
@@ -54,15 +58,64 @@
 
     getAllMarks();
 
+    const gridSizedMethod = clusterByGrid({gridSize: 72});
+
+    const clusterFeatures = computed(() =>
+        markers.value.map((mark) => ({
+            type: 'Feature',
+            id: mark.id,
+            geometry: {
+                type: 'Point',
+                coordinates: [mark.latitude, mark.longitude]
+            },
+            properties: {
+                name: mark.name
+            },
+            object: mark
+        }))
+    );
+
+    var suppressClick = false;
+    const previewVisible = ref(false);
+    const previewMarkers = ref<Mark[]>([]);
+
+    function onClusterClick(features: any[]) {
+        suppressClick = true
+        previewVisible.value = true
+
+        previewMarkers.value = features.map((feature) => feature.object)
+        console.log('Клик по кластеру. Внутри:', features)
+        console.log(previewMarkers.value)
+    }
+
+    function onMarkClick(feature: any) {
+        suppressClick = true
+        previewVisible.value = true
+
+        previewMarkers.value = [feature.object]
+        console.log('Клик по метке. Внутри:', feature);
+        console.log(previewMarkers.value)
+    }
+
+    function closePreview() {
+        previewVisible.value = false
+    }
+
 </script>
 
 <template>
-    <YMap :location="LOCATION" :behaviors="['scrollZoom', 'drag']" :ref="mapRef">
+    <YMap :location="LOCATION" :behaviors="['scrollZoom', 'drag']" :ref="refMap">
         <YMapDefaultSchemeLayer />
         <YMapDefaultFeaturesLayer />
 
         <YMapListener
-        @click="(_: any, event: object) => clickEventHandler(event, true)"
+        @click="(_: any, event: object) => {
+            if (suppressClick) {
+                suppressClick = false;
+                return;
+            }
+            clickEventHandler(event, true);
+        }"
         @dblClick="(_: any, event: object) => dblClickEventHandler(event)"
 
         @mouseMove="(_: any, event: object) => createDomEventHandler('mouseMove', event)"
@@ -74,11 +127,48 @@
         @actionEnd="(obj: object) => createBehaviorHandler(obj, false)"
         />
         
-        <YMapMarker
-            v-for="(mark, index) in markers"
-            :key="index"
-            :coordinates="[mark.latitude, mark.longitude]">
-            <div style="width: 14px; height: 14px; background: green; border-radius: 50%"></div>
-        </YMapMarker>
+        <YMapClusterer
+            :features="clusterFeatures"
+            :method="gridSizedMethod"
+        >
+            <template #marker="{ feature }">
+                <YMapMarker
+                    :key="feature.id"
+                    :coordinates="feature.geometry.coordinates"
+                    @click="onMarkClick(feature)"
+                >
+                <div class="marker-circle"></div>
+                </YMapMarker>
+            </template>
+
+            <template #cluster="{ coordinates, features }">
+                <YMapMarker
+                    :key="features[0].id + '-' + features.length"
+                    :coordinates="coordinates"
+                    @click="onClusterClick(features)"
+                >
+                    <div class="cluster-circle">
+                        <span class="cluster-text">{{ features.length }}</span>
+                    </div>
+                </YMapMarker>
+            </template>
+        </YMapClusterer>
     </YMap>
+
+    <div :class="{ 'modal': true, 'visible': previewVisible, 'preview-modal': true }">
+        <button @click="closePreview" class="close-form-btn">✖</button>
+        <div>
+            <p>Предпросмотр меток</p>
+            <div class="marks-preview-list">
+                <div class="mark-preview-item"
+                    v-for="mark in previewMarkers" 
+                    :key="mark.id.toString()">
+                    <RouterLink to=""> <p class="mark-name-preview">{{ mark.name }}</p> </RouterLink>
+                    <p>Автор: </p>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <div class="overlay" :class="{ 'visible': previewVisible }"></div>
 </template>

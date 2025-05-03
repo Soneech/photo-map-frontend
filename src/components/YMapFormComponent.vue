@@ -48,9 +48,8 @@
         />
         
         <div>
-            <YMapMarker
-                :coordinates="markCoords">
-                <div style="width: 14px; height: 14px; background: green; border-radius: 50%"></div>
+            <YMapMarker :coordinates="markCoords">
+                <div class="marker-circle"></div>
             </YMapMarker>
         </div>
     </YMap>
