@@ -16,6 +16,7 @@
     import { 
         useMapEventTracker
     } from '../lib/useMapEventTracker';
+    import router from '@/router';
 
     const LOCATION = {
         center: [37.588144, 55.733842],
@@ -82,19 +83,16 @@
     function onClusterClick(features: any[]) {
         suppressClick = true
         previewVisible.value = true
-
         previewMarkers.value = features.map((feature) => feature.object)
+
         console.log('Клик по кластеру. Внутри:', features)
-        console.log(previewMarkers.value)
     }
 
     function onMarkClick(feature: any) {
         suppressClick = true
-        previewVisible.value = true
+        console.log('Клик по метке. Внутри:', feature)
 
-        previewMarkers.value = [feature.object]
-        console.log('Клик по метке. Внутри:', feature);
-        console.log(previewMarkers.value)
+        router.push("/marks/" + feature.id)
     }
 
     function closePreview() {
@@ -163,8 +161,9 @@
                 <div class="mark-preview-item"
                     v-for="mark in previewMarkers" 
                     :key="mark.id.toString()">
-                    <RouterLink to=""> <p class="mark-name-preview">{{ mark.name }}</p> </RouterLink>
-                    <p>Автор: </p>
+                    <RouterLink :to="{name: 'MarkPage', params: {id: mark.id.toString()}}">
+                        <p class="mark-name-preview">{{ mark.name }}></p>
+                    </RouterLink>
                 </div>
             </div>
         </div> 

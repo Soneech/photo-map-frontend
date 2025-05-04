@@ -77,8 +77,7 @@ function saveMarkCoords(event: object) {
     if (coords) {
         markCoords.value = coords;
         console.log('Сохранены координаты: ', markCoords.value);
-    }
-    
+    } 
 }
 
 // zoom handler

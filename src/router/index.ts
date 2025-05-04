@@ -3,6 +3,7 @@ import HomeVue from '@/views/HomeView.vue';
 import LoginVue from '@/views/LoginView.vue';
 import RegistrationVue from '@/views/RegistrationView.vue';
 import CreateMarkVue from '@/views/CreateMarkView.vue';
+import MarkPageVue from '@/views/MarkPage.vue';
 
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -28,6 +29,11 @@ const router = createRouter({
       path: '/marks/create',
       name: 'CreateMark',
       component: CreateMarkVue
+    },
+    {
+      path: '/marks/:id',
+      name: 'MarkPage',
+      component: MarkPageVue
     }
   ]
 });

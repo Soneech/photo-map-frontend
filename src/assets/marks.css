@@ -166,3 +166,24 @@
 .mark-name-preview {
     text-decoration: underline;
 }
+
+.mark-block {
+    width: 75vw;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 30px 50px;
+    margin-top: 30px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #0f0a051a;
+}
+
+.mark-file video,
+.mark-file img {
+    max-width: 100%;
+}
+
+.mark-previews {
+    margin-top: 15px;
+    column-width: 23vw;
+    gap: 15px;
+}
