@@ -187,3 +187,74 @@
     column-width: 23vw;
     gap: 15px;
 }
+
+.mark-title {
+    font-weight: normal;
+    font-size: 23px;
+    text-align: center;
+    color: #333;
+}
+
+.profile-link {
+    margin-right: 2vw;
+}
+
+.heart {
+    position: relative;
+    width: 17px;
+    height: 17px;
+    background: #ababab;
+    transform: rotate(-45deg);
+    margin-bottom: 7px;
+    transition: background-color 0.4s ease;
+}
+
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    background: #ababab;
+    border-radius: 50%;
+    transition: background-color 0.4s ease;
+}
+  
+.heart::before {
+    top: -11px;
+    left: 0;
+}
+  
+.heart::after {
+    top: 0;
+    left: 11px;
+}  
+
+.heart:hover::before,
+.heart:hover::after,
+.heart:hover {
+    background: #cecece;
+    transition: background-color 0.4s ease;
+    cursor: pointer;
+}
+
+.likes-block {
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.likes-value span {
+    text-align: center;
+    color: #333;
+}
+
+.heart.liked,
+.heart.liked::before,
+.heart.liked::after {
+    background-color: red;
+    transition: background-color 0.4s ease;
+}

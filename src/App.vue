@@ -4,32 +4,36 @@
 
     const auth = useAuthStore();
 
-    function logout() {
-        auth.logout();
-    }
-
 </script>
 
 <template>
     <div class="wrapper">
         <header>
             <div class="header-container">
-                <h1 class="logo-text"><RouterLink to="/">Фото Карточка</RouterLink></h1>
+                <div class="main-links">
+                    <h1 class="logo-text"><RouterLink to="/">Фото Карточка</RouterLink></h1>
+                    <p class="header-link"><RouterLink to="">Метки списком</RouterLink></p>
+                    <p class="header-link"><RouterLink to="">Категории</RouterLink></p>
+                    <p class="header-link"><RouterLink to="">Пользователи</RouterLink></p>
+                </div>
                 <div class="navigation">
-                    <ul>
-                        <li v-if="auth.isLoggedIn">
-                            <a href="#" @click="logout" class="header-button" id="logout-btn">Выйти</a>
-                        </li>
-                        <div v-else>
-                            <li>
-                                <RouterLink to="/auth/login" class="header-button" id="sign-in-btn">Войти</RouterLink>
-                            </li>
-                            <li>
-                                <RouterLink to="/auth/registration" class="header-button" id="sign-up-btn">Зарегистрироваться</RouterLink>
-                            </li>
+                    <div>
+                        <div v-if="auth.isLoggedIn" class="main-links">
+                            <p class="header-link">
+                                <RouterLink 
+                                    :to="{name: 'ProfilePage', params: {id: auth.id}}"
+                                    class="header-link profile-link">Профиль</RouterLink>
+                            </p>
                         </div>
-                        
-                    </ul>
+                        <div v-else class="main-links auth-links">
+                            <div>
+                                <p class="header-link"><RouterLink to="/auth/login" id="sign-in-btn">Войти</RouterLink></p>
+                            </div>
+                            <div>
+                                <p class="header-link"><RouterLink to="/auth/registration" class="header-link" id="sign-up-btn">Зарегистрироваться</RouterLink></p>
+                            </div>
+                        </div>  
+                    </div>
                 </div>
             </div>
         </header>

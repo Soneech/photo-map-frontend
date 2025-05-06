@@ -1,0 +1,29 @@
+.profile-page {
+    background-color: #f6f6f6;
+}
+
+.profile-block {
+    background-color: #ffffff;
+    width: 70vw;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #0f0a051a;
+}
+
+.profile-image {
+    max-width: 380px;
+}
+
+.form-button a {
+    color: #030303bd;
+}
+
+.form-button:hover a {
+    color: #ffffff;
+    transition: background-color 0.5s ease;
+}

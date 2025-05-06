@@ -1,6 +1,8 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue'
-    import { useRoute } from 'vue-router'
+    import { RouterLink, useRoute } from 'vue-router'
+    import { useAuthStore } from '@/stores/auth'
+    import router from '@/router'
     import {
         YMap,
         YMapDefaultSchemeLayer,
@@ -9,13 +11,17 @@
     } from '../lib/ymaps'
     import { setMapRef } from '../lib/useMapEventTracker'
 
+    const auth = useAuthStore()
+
     const mapRef = ref()
     setMapRef(mapRef)
 
-    const route = useRoute();
-    const markId = route.params.id;
+    const route = useRoute()
+    const markId = route.params.id
 
-    declare const URL: typeof window.URL;
+    const authUserId = localStorage.getItem('id')
+
+    declare const URL: typeof window.URL
 
     function getObjectURL(file: any): string {
         return URL.createObjectURL(file)
@@ -23,12 +29,15 @@
 
     interface Mark {
        id: BigInt,
+       authorId: BigInt,
+       authorName: String,
        latitude: number,
        longitude: number,
        name: string,
        description: string,
        likes: BigInt,
        createdAt: string,
+       updatedAt: string,
     }
 
     const mark       = ref<Mark | null>(null)
@@ -46,9 +55,6 @@
                 method: 'GET'
             })
 
-            if (!response.ok) {
-                throw new Error(`Server returned ${response.status}`)
-            }
             console.log('response received')
 
             const formData = await response.formData()
@@ -73,10 +79,65 @@
         }
         finally {
             loading.value = false
+            console.log(mark.value)
         }
     }
 
     onMounted(getMarkFullInfo)
+
+
+    interface Like {
+        userId: bigint
+        markId: bigint
+    }
+
+    const likes = ref<Like[]>([])
+    var likesCount = 0
+
+    const liked = ref(false)
+
+    function handleLike() {
+        liked.value = !liked.value
+        if (liked.value) likesCount++
+        else likesCount--
+    }
+
+    async function getLikes() {
+        const response = await fetch("http://localhost:8080/likes/" + markId, {
+            method: 'GET'
+        })
+
+        type RawLike = { userId: number | string; markId: number | string }
+        const data = await response.json() as RawLike[]
+
+        likesCount = data.length
+        
+        const foundUserId = data.find(item =>
+            item.userId == authUserId
+        )
+        if (foundUserId) {
+            liked.value = true
+        }
+    }
+
+    getLikes()
+
+    async function addOrDeleLike() {
+        const response = await fetch("http://localhost:8080/likes/" + markId, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            }
+        })
+
+        if (response.status == 401 || response.status == 405) {
+            router.push("/auth/login")
+        }
+
+        if (response.status == 200) {
+            handleLike()
+        }
+    }
     
 </script>
 
@@ -104,7 +165,10 @@
         </div>
 
         <div class="mark-block">
-            <h2>{{ mark.name }}</h2>
+            <h3 class="mark-title">{{ mark.name }}</h3>
+            <RouterLink :to="{name: 'ProfilePage', params: {id: mark.authorId.toString()}}">
+                <p>Автор <span style="text-decoration: underline;">{{ mark.authorName }}</span></p>
+            </RouterLink>
             <p>{{ mark.description }}</p>
             
             <div class="files-block">
@@ -136,6 +200,14 @@
                                 >
                             </video>
                         </div>
+                    </div>
+                </div>
+                <div style="height: 3vh;"></div>
+                <div class="likes-block">
+                    <div class="heart" :class="{ liked }" @click="addOrDeleLike"></div>
+                    <div class="likes-value">
+                        <span v-if="!likes"></span>
+                        <span v-else>{{ likesCount }}</span>
                     </div>
                 </div>
             </div>

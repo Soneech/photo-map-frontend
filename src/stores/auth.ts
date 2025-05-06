@@ -6,9 +6,10 @@ export const useAuthStore = defineStore({
     id: 'auth',
     state: () => {
         return {
+            id: localStorage.getItem('id') ? JSON.parse(localStorage.getItem('id')!) : null,
             email: localStorage.getItem('email') ? JSON.parse(localStorage.getItem('email')!) : null,
             name: localStorage.getItem('name') ? JSON.parse(localStorage.getItem('name')!) : null,
-            token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')!) : null, 
+            token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')!) : null,
             loginSuccessReturnUrl: '/',
             registrationSuccessReturnUrl: '/auth/login',
             errors: {},
@@ -60,8 +61,12 @@ export const useAuthStore = defineStore({
                 const data = await response.json();
 
                 const token = data.token;
+                const id = data.id;
                 this.token = token;
+                this.id = id;
+
                 localStorage.setItem('token', JSON.stringify(token));
+                localStorage.setItem('id', JSON.stringify(id));
 
                 useAuthElementsStore().loginAction();
                 router.push(this.loginSuccessReturnUrl || '/');
@@ -83,6 +88,7 @@ export const useAuthStore = defineStore({
             this.token = null;
 
             localStorage.removeItem('token');
+            localStorage.removeItem('id');
             useAuthElementsStore().logoutAction();
 
             router.push('/');

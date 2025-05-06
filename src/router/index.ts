@@ -4,6 +4,7 @@ import LoginVue from '@/views/LoginView.vue';
 import RegistrationVue from '@/views/RegistrationView.vue';
 import CreateMarkVue from '@/views/CreateMarkView.vue';
 import MarkPageVue from '@/views/MarkPage.vue';
+import ProfilePageVue from '@/views/ProfilePageView.vue'
 
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -34,13 +35,18 @@ const router = createRouter({
       path: '/marks/:id',
       name: 'MarkPage',
       component: MarkPageVue
+    },
+    {
+      path: '/profile/:id',
+      name: 'ProfilePage',
+      component: ProfilePageVue
     }
   ]
 });
 
 router.beforeEach(async (to) => {
-  const publicPages = ['/auth/login', '/auth/registration', '/'];
-  const authRequired = !publicPages.includes(to.path);
+  const publicPages = ['Home', 'Login', 'Registration', 'MarkPage'];
+  const authRequired = !publicPages.includes(to.name as string);
   const auth = useAuthStore();
 
   if (authRequired && !auth.token) {
