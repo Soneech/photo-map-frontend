@@ -12,7 +12,6 @@
             <div class="header-container">
                 <div class="main-links">
                     <h1 class="logo-text"><RouterLink to="/">Фото Карточка</RouterLink></h1>
-                    <p class="header-link"><RouterLink to="">Метки списком</RouterLink></p>
                     <p class="header-link"><RouterLink to="">Категории</RouterLink></p>
                     <p class="header-link"><RouterLink to="">Пользователи</RouterLink></p>
                 </div>

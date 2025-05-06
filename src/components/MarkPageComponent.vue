@@ -27,6 +27,12 @@
         return URL.createObjectURL(file)
     }
 
+    function needLogin(status: any) {
+        if (status == 401 || status == 405 || status == 404) {
+            router.push("/auth/login")
+        }
+    }
+
     interface Mark {
        id: BigInt,
        authorId: BigInt,
@@ -55,10 +61,7 @@
                 method: 'GET'
             })
 
-            console.log('response received')
-
             const formData = await response.formData()
-            console.log('formData: ', formData)
 
             const metaPart = formData.get('metadata')
             mark.value = JSON.parse(metaPart) as Mark
@@ -68,10 +71,6 @@
 
             photos.value = formData.getAll('photos')
                 .filter((f): f is Blob => f instanceof Blob)
-            
-            console.log(mark.value)
-            console.log(videos.value)
-            console.log(photos.value)
         }
         catch (err: any) {
             console.error(err)
@@ -79,7 +78,6 @@
         }
         finally {
             loading.value = false
-            console.log(mark.value)
         }
     }
 
@@ -130,15 +128,60 @@
             }
         })
 
-        if (response.status == 401 || response.status == 405) {
-            router.push("/auth/login")
-        }
+        needLogin(response.status)
 
         if (response.status == 200) {
             handleLike()
         }
     }
-    
+
+
+    interface Comment {
+        userId: bigint,
+        userName: string,
+        markId: string,
+        text: string,
+    }
+
+    const comment = ref<Comment>({
+        userId: null,
+        userName: '',
+        markId: markId.toString(),
+        text: ''
+    });
+    const comments = ref<Comment[]>([]);
+
+    async function createComment() {
+        const response = await fetch("http://localhost:8080/comments", {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({markId: comment.value.markId, text: comment.value.text})
+        })
+
+        needLogin(response.status)
+
+        const commentResponse = await response.json() as Comment
+        comments.value.push(commentResponse)
+
+        comment.value.text = ''
+    }
+
+    async function getComments() {
+        const response = await fetch("http://localhost:8080/comments/" + markId, {
+            method: 'GET'
+        })
+        const commentResponse = await response.json() as Comment[]
+        comments.value = commentResponse
+
+        console.log(comments.value)
+    }
+
+    getComments()
+
+
 </script>
 
 <template>
@@ -210,6 +253,30 @@
                         <span v-else>{{ likesCount }}</span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="comment-block">
+            <div class="create-comment-block">
+                <textarea 
+                    class="mark-note mark-comment" 
+                    placeholder="Ваш комментарий" 
+                    v-model="comment.text">
+                </textarea>
+                <button @click="createComment" class="default-button">Отправить</button>
+            </div>
+
+            <div class="comments">
+                <div v-if="comments.length == 0"></div>
+                <div v-else v-for="(comment, index) in comments" :key="index">
+                    <div>
+                        <RouterLink :to="{name: 'ProfilePage', params: {id: comment.userId.toString()}}">
+                            <p style="text-decoration: underline;">{{ comment.userName }}</p>
+                        </RouterLink>
+                        <p class="comment-text">{{ comment.text }}</p>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
