@@ -67,13 +67,13 @@
                 </div>
                 
                 <div class="data">
-                    <p>{{ user.name }}</p>
-                    <p v-if="currentOrAdminUser()">{{ user.email }}</p>
+                    <p>Логин: {{ user.name }}</p>
+                    <p v-if="currentOrAdminUser()">Почта: {{ user.email }}</p>
                     <p v-if="currentOrAdminUser">
                         <span v-if="user.role == 'ROLE_ADMIN'">Администратор</span>
                         <span v-if="user.role == 'ROLE_USER'">Обычный пользователь</span>
                     </p>
-                    <p><RouterLink to="">Метки</RouterLink></p>
+                    <p><RouterLink to="" style="text-decoration: underline;">Метки</RouterLink></p>
                 </div>
             </div>
             
@@ -81,7 +81,12 @@
             <button class="default-button form-button"><RouterLink to="">Редактировать</RouterLink></button>
             -->
 
-            <button v-if="userId == storageUserId" class="default-button form-button" @click="logout">Выйти</button>
+            <button 
+                v-if="userId == storageUserId" 
+                class="default-button form-button profile-logout-button" 
+                @click="logout">
+                Выйти
+            </button>
         </div>
     </div>
 

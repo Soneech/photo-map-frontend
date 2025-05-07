@@ -27,3 +27,7 @@
     color: #ffffff;
     transition: background-color 0.5s ease;
 }
+
+.profile-logout-button {
+    width: 7vw;
+}

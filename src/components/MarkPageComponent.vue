@@ -137,6 +137,7 @@
 
 
     interface Comment {
+        id: bigint,
         userId: bigint,
         userName: string,
         markId: string,
@@ -144,6 +145,7 @@
     }
 
     const comment = ref<Comment>({
+        id: null,
         userId: null,
         userName: '',
         markId: markId.toString(),
@@ -182,6 +184,32 @@
     getComments()
 
 
+    const isModalVisible = ref(false)
+    var commentToDelete = ''
+
+    function closeModalWindow() {
+        isModalVisible.value = false;
+        commentToDelete = '';
+    }
+
+    function openModalWindow(commentId: string) {
+        commentToDelete = commentId;
+        isModalVisible.value = true;
+    }
+
+    async function deleteComment() {
+        const response = await fetch("http://localhost:8080/comments/" + commentToDelete, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            }
+        })
+
+        needLogin(response.status)
+        comments.value = comments.value.filter(comment => comment.id.toString() !== commentToDelete);
+        isModalVisible.value = false
+    }
+
 </script>
 
 <template>
@@ -210,7 +238,7 @@
         <div class="mark-block">
             <h3 class="mark-title">{{ mark.name }}</h3>
             <RouterLink :to="{name: 'ProfilePage', params: {id: mark.authorId.toString()}}">
-                <p>Автор <span style="text-decoration: underline;">{{ mark.authorName }}</span></p>
+                <p>Автор <span style="text-decoration: underline;">@{{ mark.authorName }}</span></p>
             </RouterLink>
             <p>{{ mark.description }}</p>
             
@@ -256,28 +284,46 @@
             </div>
         </div>
 
-        <div class="comment-block">
+        <div class="comments-block">
+            <p>Комментарии</p>
             <div class="create-comment-block">
                 <textarea 
                     class="mark-note mark-comment" 
                     placeholder="Ваш комментарий" 
                     v-model="comment.text">
                 </textarea>
-                <button @click="createComment" class="default-button">Отправить</button>
+                <button @click="createComment" class="default-button comment-button">Отправить</button>
             </div>
 
             <div class="comments">
                 <div v-if="comments.length == 0"></div>
-                <div v-else v-for="(comment, index) in comments" :key="index">
+                <div v-else v-for="comment in comments" class="comment-block">
                     <div>
                         <RouterLink :to="{name: 'ProfilePage', params: {id: comment.userId.toString()}}">
-                            <p style="text-decoration: underline;">{{ comment.userName }}</p>
+                            <p style="text-decoration: underline;" class="comment-author">@{{ comment.userName }}</p>
                         </RouterLink>
                         <p class="comment-text">{{ comment.text }}</p>
                     </div>
+                    <button v-if="comment.userId.toString() == authUserId"
+                        @click="openModalWindow(comment.id.toString())" 
+                        class="close-form-btn delete-comment-btn">
+                        ✖
+                    </button>
                 </div>
-                
             </div>
+
+            <div :class="{ 'modal': true, 'visible': isModalVisible }" class="mark-modal">
+                <button @click="closeModalWindow" class="close-form-btn">✖</button>
+
+                <div>
+                    <p>Удалить комментарий?</p>
+                    <div class="mark-form-btns">
+                        <button @click="deleteComment">Да</button>
+                        <button @click="closeModalWindow">Нет</button>
+                    </div>
+                </div> 
+            </div>
+            <div class="overlay" :class="{ 'visible': isModalVisible }"></div>
         </div>
     </div>
 

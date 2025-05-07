@@ -258,3 +258,42 @@
     background-color: red;
     transition: background-color 0.4s ease;
 }
+
+.comments-block {
+    width: 75vw;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 30px 50px;
+    margin-top: 30px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #0f0a051a;
+}
+
+.comment-button {
+    width: 8vw;
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+.comment-block {
+    background-color: #f7f7f7;
+    margin-bottom: 10px;
+    padding-left: 7px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.comment-author {
+    padding-top: 5px;
+}
+
+.comment-text {
+    padding-bottom: 5px;
+}
+
+.delete-comment-btn {
+    margin-top: -75px;
+    margin-right: 5px;
+    font-size: 14px;
+}
+
