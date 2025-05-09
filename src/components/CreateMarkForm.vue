@@ -29,13 +29,21 @@
         latitude: number,
         longitude: number,
         name: string,
-        description: string
+        description: string,
+        categoryId: string,
     }
 
     interface Files {
         photos: File[],
         videos: File[]
     }
+
+    interface Category {
+        id: bigint,
+        name: string,
+    }
+    const categories = ref<Category[]>(null)
+    const selectedCategoryId = ref<string>('')
 
     const auth = useAuthStore();
 
@@ -44,6 +52,7 @@
         description: '',
         latitude: markCoords.value[0],
         longitude: markCoords.value[1],
+        categoryId: ''
     })
 
     const markFiles = ref<Files>({
@@ -86,9 +95,12 @@
     }
 
     async function createMark() {
-        const formData = new FormData();
-        mark.value.latitude = markCoords.value[0];
-        mark.value.longitude = markCoords.value[1];
+        console.log(selectedCategoryId.value)
+
+        const formData = new FormData()
+        mark.value.latitude = markCoords.value[0]
+        mark.value.longitude = markCoords.value[1]
+        mark.value.categoryId = selectedCategoryId.value
     
         formData.append("mark", new Blob([JSON.stringify(mark.value)], { type: "application/json" }));
     
@@ -124,9 +136,19 @@
         return result;
     }
 
+    async function getCategories() {
+        const response = await fetch("http://localhost:8080/categories", {
+            method: "GET",
+        });
+
+        const data = await response.json() as Array<Category>
+        categories.value = data
+        console.log(data)
+    }
+
+    getCategories()
+
     function onSubmit() {
-        console.log(mark);
-        console.log(markFiles);
         createMark();
     }
 
@@ -137,6 +159,28 @@
         <form @submit.prevent="onSubmit" class="create-mark-form">
             <input type="text" id="name" class="form-input" placeholder="Название" v-model="mark.name">
             <textarea class="mark-note" placeholder="Ваша заметка" v-model="mark.description"></textarea>
+            
+            <div v-if="categories == null"></div>
+            <div v-else class="categories-block">
+                <div>
+                    <label for="category-select">Выберите категорию:</label>
+                    <select
+                        id="category-select"
+                        v-model="selectedCategoryId"
+                    >
+                    
+                        <option disabled value="">— выберите —</option>
+
+                        <option
+                            v-for="category in categories"
+                            :key="category.id.toString()"
+                            :value="category.id.toString()"
+                        >
+                            {{ category.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
             
             <div class="load-files-block">
                 <div class="load-photo-block">

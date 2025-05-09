@@ -39,6 +39,8 @@
        authorName: String,
        latitude: number,
        longitude: number,
+       categoryId: BigInt,
+       categoryName: string,
        name: string,
        description: string,
        likes: BigInt,
@@ -238,8 +240,9 @@
         <div class="mark-block">
             <h3 class="mark-title">{{ mark.name }}</h3>
             <RouterLink :to="{name: 'ProfilePage', params: {id: mark.authorId.toString()}}">
-                <p>Автор <span style="text-decoration: underline;">@{{ mark.authorName }}</span></p>
+                <p>Автор: <span style="text-decoration: underline;">@{{ mark.authorName }}</span></p>
             </RouterLink>
+            <p>Категория: {{ mark.categoryName }}</p>
             <p>{{ mark.description }}</p>
             
             <div class="files-block">
