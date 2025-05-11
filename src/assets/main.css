@@ -187,3 +187,32 @@ ul {
 .auth-links {
     margin-right: 3vw;
 }
+
+.categories-list {
+    position: absolute;
+    top: 9vh;
+    left: 18vw;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.categories-link {
+    color: white; 
+    cursor: pointer;
+
+    -webkit-user-select: none;    /* Chrome, Safari, Opera */
+    -moz-user-select: none;       /* Firefox */
+    -ms-user-select: none; 
+}
+
+.fade-block {
+    opacity: 0;
+    transition: opacity 0.3s ease; /* длительность 0.5s, плавность ease-in-out */
+}
+  
+/* когда добавится класс .visible — начнётся переход к opacity:1 */
+.fade-block.visible {
+    opacity: 1;
+}

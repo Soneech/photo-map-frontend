@@ -163,13 +163,12 @@
             <div v-if="categories == null"></div>
             <div v-else class="categories-block">
                 <div>
-                    <label for="category-select">Выберите категорию:</label>
+                    <label for="category-select" class="category-label">Выберите категорию: </label>
                     <select
                         id="category-select"
                         v-model="selectedCategoryId"
                     >
-                    
-                        <option disabled value="">— выберите —</option>
+                        <option disabled value="">-- Выбрать --</option>
 
                         <option
                             v-for="category in categories"

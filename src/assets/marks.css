@@ -297,3 +297,18 @@
     font-size: 14px;
 }
 
+.categories-block {
+    margin-top: 10px;
+}
+
+.category-label {
+    margin-right: 5px;
+}
+
+.category-item {
+    padding-bottom: 0.6rem;
+}
+
+.category-checkbox-name {
+    margin-left: 10px;
+}

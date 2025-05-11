@@ -18,6 +18,8 @@
     } from '../lib/useMapEventTracker';
     import router from '@/router';
 
+    import { categoriesVisible } from '../lib/categoriesViewLogic'
+
     const LOCATION = {
         center: [37.588144, 55.733842],
         zoom: 10
@@ -41,7 +43,8 @@
        id: BigInt,
        latitude: number,
        longitude: number,
-       name: string 
+       name: string,
+       categoryId: bigint
     }
 
     const markers = ref<Mark[]>([]);
@@ -55,14 +58,45 @@
             const data: Mark[] = await response.json();
             markers.value = data;
         }
+        console.log('Маркеры: ', markers.value)
     }
 
-    getAllMarks();
+    getAllMarks()
+
+
+    interface Category {
+        id: bigint,
+        name: string,
+    }
+    const categories = ref<Category[]>(null)
+    const selectedCategoryIds = ref<bigint[]>([])
+
+    async function getCategories() {
+        const response = await fetch("http://localhost:8080/categories", {
+            method: "GET",
+        });
+
+        const data = await response.json() as Array<Category>
+        categories.value = data
+    }
+    getCategories()
+
+    const filteredMarkers = computed<Mark[]>(() => {
+
+        if (selectedCategoryIds.value.length > 0) {
+            return markers.value.filter(mark =>
+                selectedCategoryIds.value.includes(mark.categoryId)
+            );
+        }
+
+        return markers.value;
+    });
+
 
     const gridSizedMethod = clusterByGrid({gridSize: 72});
 
     const clusterFeatures = computed(() =>
-        markers.value.map((mark) => ({
+        filteredMarkers.value.map((mark) => ({
             type: 'Feature',
             id: mark.id,
             geometry: {
@@ -84,14 +118,10 @@
         suppressClick = true
         previewVisible.value = true
         previewMarkers.value = features.map((feature) => feature.object)
-
-        console.log('Клик по кластеру. Внутри:', features)
     }
 
     function onMarkClick(feature: any) {
         suppressClick = true
-        console.log('Клик по метке. Внутри:', feature)
-
         router.push("/marks/" + feature.id)
     }
 
@@ -168,6 +198,23 @@
             </div>
         </div> 
     </div>
-
     <div class="overlay" :class="{ 'visible': previewVisible }"></div>
+
+    <div class="categories-list fade-block" :class="{visible: categoriesVisible}">
+        <div
+            v-for="category in categories"
+            :key="category.id.toString()"
+            class="category-item"
+        >
+            <label>
+                <input
+                    type="checkbox"
+                    class="category-checkbox"
+                    :value="category.id"
+                    v-model="selectedCategoryIds"
+                />
+                <span class="category-checkbox-name">{{ category.name }}</span>
+            </label>
+        </div>
+    </div>
 </template>
