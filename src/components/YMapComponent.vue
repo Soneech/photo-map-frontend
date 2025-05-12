@@ -10,7 +10,9 @@
         YMapListener,
         YMapMarker,
         YMapClusterer,
-        clusterByGrid
+        clusterByGrid,
+        YMapControl, 
+        YMapControls,
     } from '../lib/ymaps'
 
     import { 
@@ -18,14 +20,17 @@
     } from '../lib/useMapEventTracker';
     import router from '@/router';
 
-    import { categoriesVisible } from '../lib/categoriesViewLogic'
+    import { 
+        categoriesVisible, 
+        showOnlyMyMarks,
+        showUserMarks,
+        selectedUserId
+    } from '../lib/categoriesViewLogic'
 
-    const LOCATION = {
-        center: [37.588144, 55.733842],
-        zoom: 10
-    }
+    import { LOCATION } from '../lib/variables'
 
     const auth = useAuthStore();
+    const authUserId = localStorage.getItem('id')
 
     const mapEntity = ref<any>(null)
     function refMap(el: { entity: any } | null) {
@@ -41,10 +46,12 @@
 
     interface Mark {
        id: BigInt,
+       authorId: BigInt,
        latitude: number,
        longitude: number,
        name: string,
-       categoryId: bigint
+       categoryId: bigint,
+       isPrivate: boolean,
     }
 
     const markers = ref<Mark[]>([]);
@@ -58,7 +65,7 @@
             const data: Mark[] = await response.json();
             markers.value = data;
         }
-        console.log('Маркеры: ', markers.value)
+        console.log(markers.value)
     }
 
     getAllMarks()
@@ -82,14 +89,32 @@
     getCategories()
 
     const filteredMarkers = computed<Mark[]>(() => {
+        let result = markers.value
+
+        result = result.filter(mark =>
+            mark.isPrivate == false || 
+            mark.authorId.toString() == authUserId
+        )
 
         if (selectedCategoryIds.value.length > 0) {
-            return markers.value.filter(mark =>
+            result = result.filter(mark =>
                 selectedCategoryIds.value.includes(mark.categoryId)
             );
         }
 
-        return markers.value;
+        if (showOnlyMyMarks.value) {
+            result = result.filter(mark =>
+                mark.authorId.toString() == authUserId
+            );
+        }
+
+        if (showUserMarks.value) {
+            result = result.filter(mark =>
+                mark.authorId.toString() == selectedUserId.value
+            )
+        }
+
+        return result;
     });
 
 
@@ -137,22 +162,22 @@
         <YMapDefaultFeaturesLayer />
 
         <YMapListener
-        @click="(_: any, event: object) => {
-            if (suppressClick) {
-                suppressClick = false;
-                return;
-            }
-            clickEventHandler(event, true);
-        }"
-        @dblClick="(_: any, event: object) => dblClickEventHandler(event)"
+            @click="(_: any, event: object) => {
+                if (suppressClick) {
+                    suppressClick = false;
+                    return;
+                }
+                clickEventHandler(event, true);
+            }"
+            @dblClick="(_: any, event: object) => dblClickEventHandler(event)"
 
-        @mouseMove="(_: any, event: object) => createDomEventHandler('mouseMove', event)"
-        @mouseEnter="(_: any, event: object) => createDomEventHandler('mouseEnter', event)"
-        @mouseLeave="(_: any, event: object) => createDomEventHandler('mouseLeave', event)"
-        @mouseDown="(_: any, event: object) => createDomEventHandler('mouseDown', event)"
+            @mouseMove="(_: any, event: object) => createDomEventHandler('mouseMove', event)"
+            @mouseEnter="(_: any, event: object) => createDomEventHandler('mouseEnter', event)"
+            @mouseLeave="(_: any, event: object) => createDomEventHandler('mouseLeave', event)"
+            @mouseDown="(_: any, event: object) => createDomEventHandler('mouseDown', event)"
 
-        @actionStart="(obj: object) => createBehaviorHandler(obj, true)"
-        @actionEnd="(obj: object) => createBehaviorHandler(obj, false)"
+            @actionStart="(obj: object) => createBehaviorHandler(obj, true)"
+            @actionEnd="(obj: object) => createBehaviorHandler(obj, false)"
         />
         
         <YMapClusterer
@@ -181,6 +206,7 @@
                 </YMapMarker>
             </template>
         </YMapClusterer>
+
     </YMap>
 
     <div :class="{ 'modal': true, 'visible': previewVisible, 'preview-modal': true }">

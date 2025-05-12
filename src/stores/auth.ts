@@ -81,6 +81,9 @@ export const useAuthStore = defineStore({
                 const data = await response.json();
                 this.message = data.message;
             }
+            else if (response.status == 404) {
+                this.loginStatus = 404
+            }
         },
         logout() {
             this.loginStatus = 0;

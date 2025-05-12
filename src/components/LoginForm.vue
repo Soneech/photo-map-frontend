@@ -20,7 +20,7 @@
     }
 
     function openModalWindow() {
-        if (auth.loginStatus == 400 || auth.loginStatus == 401) {
+        if (auth.loginStatus == 400 || auth.loginStatus == 401 || auth.loginStatus == 404) {
             isModalVisible.value = true;
         }
     }
@@ -49,6 +49,7 @@
             <button @click="closeModalWindow" class="close-form-btn">✖</button>
             <p v-if="useAuthStore().loginStatus == 400" v-for="message in useAuthStore().errors">{{ message }}</p>
             <p v-if="useAuthStore().loginStatus == 401">{{ auth.message }}</p>
+            <p v-if="useAuthStore().loginStatus == 404">Неверная почта или пароль</p>
         </div>
 
         <div class="overlay" :class="{ 'visible': isModalVisible }"></div>

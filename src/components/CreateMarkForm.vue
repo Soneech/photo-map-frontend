@@ -1,28 +1,28 @@
 <script lang="ts" setup>
-    import { ref } from 'vue';
+    import { ref } from 'vue'
     import { 
         markCoords
-    } from '../lib/useMapEventTracker';
-    import { useAuthStore } from '@/stores/auth';
-    import router from '@/router';
+    } from '../lib/useMapEventTracker'
+    import { useAuthStore } from '@/stores/auth'
+    import router from '@/router'
 
-    declare const URL: typeof window.URL;
+    declare const URL: typeof window.URL
 
-    var errors: string[] = [];
+    var errors: string[] = []
 
-    var isModalVisible = ref(false);
-    var isErrorModalVisible = ref(false);
+    var isModalVisible = ref(false)
+    var isErrorModalVisible = ref(false)
 
     const openModalWindow = () => {
-        isModalVisible.value = true;
+        isModalVisible.value = true
     };
     const openErrorModalWindow = () => {
-        isErrorModalVisible.value = true;
+        isErrorModalVisible.value = true
     };
     const closeModalWindow = () => {
-        isModalVisible.value = false;
-        isErrorModalVisible.value = false;
-        errors = [];
+        isModalVisible.value = false
+        isErrorModalVisible.value = false
+        errors = []
     }
 
     interface Mark {
@@ -31,6 +31,7 @@
         name: string,
         description: string,
         categoryId: string,
+        isPrivate: boolean,
     }
 
     interface Files {
@@ -45,14 +46,15 @@
     const categories = ref<Category[]>(null)
     const selectedCategoryId = ref<string>('')
 
-    const auth = useAuthStore();
+    const auth = useAuthStore()
 
     const mark = ref<Mark>({
         name: '',
         description: '',
         latitude: markCoords.value[0],
         longitude: markCoords.value[1],
-        categoryId: ''
+        categoryId: '',
+        isPrivate: false
     })
 
     const markFiles = ref<Files>({
@@ -102,10 +104,10 @@
         mark.value.longitude = markCoords.value[1]
         mark.value.categoryId = selectedCategoryId.value
     
-        formData.append("mark", new Blob([JSON.stringify(mark.value)], { type: "application/json" }));
+        formData.append("mark", new Blob([JSON.stringify(mark.value)], { type: "application/json" }))
     
-        markFiles.value.photos.forEach(photo => formData.append("photos", photo));
-        markFiles.value.videos.forEach(video => formData.append("videos", video));
+        markFiles.value.photos.forEach(photo => formData.append("photos", photo))
+        markFiles.value.videos.forEach(video => formData.append("videos", video))
     
         const response = await fetch("http://localhost:8080/marks/create", {
         method: "POST",
@@ -116,24 +118,24 @@
         });
         
         if (!response.ok) {
-            const errorResponse = await response.json();
-            console.log(errorResponse);
+            const errorResponse = await response.json()
+            console.log(errorResponse)
 
             if (errorResponse.status == '401') {
-                router.push("/auth/login");
+                router.push("/auth/login")
             }
             else {
-                errors = errorResponse.errors;
-                console.log(errors);
-                openErrorModalWindow();
-                return;
+                errors = errorResponse.errors
+                console.log(errors)
+                openErrorModalWindow()
+                return
             }
         }
     
-        const result = await response.json();
-        openModalWindow();
+        const result = await response.json()
+        openModalWindow()
 
-        return result;
+        return result
     }
 
     async function getCategories() {
@@ -159,6 +161,10 @@
         <form @submit.prevent="onSubmit" class="create-mark-form">
             <input type="text" id="name" class="form-input" placeholder="Название" v-model="mark.name">
             <textarea class="mark-note" placeholder="Ваша заметка" v-model="mark.description"></textarea>
+            <label>
+                <input type="checkbox" v-model="mark.isPrivate" />
+                Приватно
+            </label>
             
             <div v-if="categories == null"></div>
             <div v-else class="categories-block">

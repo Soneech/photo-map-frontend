@@ -1,8 +1,9 @@
 <script lang="ts" setup>
     import { useAuthStore } from '@/stores/auth'
     import { useRoute, RouterLink } from 'vue-router'
+    import router from '@/router'
     import { ref } from 'vue'
-    import { onMounted } from 'vue'
+    import { handleShowUserMarks } from '../lib/categoriesViewLogic'
 
     const auth = useAuthStore()
 
@@ -21,6 +22,12 @@
         email: string,
         role: string,
     }
+    
+    function needLogin(status: any) {
+        if (status == 401 || status == 405 || status == 404) {
+            router.push("/auth/login")
+        }
+    }
 
     const user = ref<User | null>(null)
 
@@ -30,6 +37,8 @@
             headers: {
             Authorization: `Bearer ${auth.token}`,
         }})
+
+        needLogin(response.status)
 
         const raw = await response.json() as {
             id: BigInt
@@ -73,7 +82,7 @@
                         <span v-if="user.role == 'ROLE_ADMIN'">Администратор</span>
                         <span v-if="user.role == 'ROLE_USER'">Обычный пользователь</span>
                     </p>
-                    <p><RouterLink to="" style="text-decoration: underline;">Метки</RouterLink></p>
+                    <p @click="handleShowUserMarks(userId.at(0))" style="text-decoration: underline;"><RouterLink to="/">Метки</RouterLink></p>
                 </div>
             </div>
             

@@ -46,6 +46,7 @@
        likes: BigInt,
        createdAt: string,
        updatedAt: string,
+       isPrivate: boolean,
     }
 
     const mark       = ref<Mark | null>(null)
@@ -243,6 +244,8 @@
                 <p>Автор: <span style="text-decoration: underline;">@{{ mark.authorName }}</span></p>
             </RouterLink>
             <p>Категория: {{ mark.categoryName }}</p>
+            <p v-if="mark.isPrivate">Приватная метка</p>
+            
             <p>{{ mark.description }}</p>
             
             <div class="files-block">
